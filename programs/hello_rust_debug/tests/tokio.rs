@@ -1,33 +1,13 @@
-use anchor_lang::prelude::*;
-use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, pubkey::Pubkey};
-
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
-
-#[program]
-pub mod hello_rust_debug {
-    use super::*;
-    pub fn initialize(_ctx: Context<Initialize>) -> ProgramResult {
-        // Log a string
-        msg!("hello world");
-
-        Ok(())
-    }
-}
-
-#[derive(Accounts)]
-pub struct Initialize {}
-
 mod tests {
+    use anchor_lang::prelude::{AccountMeta, Pubkey};
+    use hello_rust_debug::{entry, id};
+    use solana_program::instruction::Instruction;
     use solana_program_test::*;
+    use solana_sdk::signer::Signer;
+    use solana_sdk::transaction::Transaction;
 
     #[tokio::test]
     async fn test_logging() {
-        use crate::*;
-        use solana_program::instruction::Instruction;
-        use solana_program_test::*;
-        use solana_sdk::signer::Signer;
-        use solana_sdk::transaction::Transaction;
-
         // Program
         let program_id = id();
         let program_test = ProgramTest::new("hello_rust_debug", program_id, processor!(entry));
