@@ -1,0 +1,24 @@
+[package]
+name = "basic_2"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "basic_2"
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.18.0"
+anchor-client = "0.18.0"
+shellexpand = "2.1.0"
+anyhow = "1.0.32"
+rand = "0.7.3"
+clap = "3.0.0-beta.5"
+solana-sdk = "1.8.2"
