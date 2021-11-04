@@ -1,5 +1,5 @@
 [package]
-name = "hello-rust-debug"
+name = "hello_rust_debug"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2018"
