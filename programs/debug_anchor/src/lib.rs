@@ -4,7 +4,7 @@ use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, msg, 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[program]
-pub mod hello_rust_debug {
+pub mod debug_anchor {
     use super::*;
     pub fn initialize(_ctx: Context<Initialize>) -> ProgramResult {
         // Log a string
@@ -17,6 +17,7 @@ pub mod hello_rust_debug {
 #[derive(Accounts)]
 pub struct Initialize {}
 
+#[cfg(test)]
 mod tests {
     use solana_program_test::*;
 
@@ -30,7 +31,7 @@ mod tests {
 
         // Program
         let program_id = id();
-        let program_test = ProgramTest::new("hello_rust_debug", program_id, processor!(entry));
+        let program_test = ProgramTest::new("debug_anchor", program_id, processor!(entry));
 
         // Start
         let (mut banks_client, payer, recent_blockhash) = program_test.start().await;
