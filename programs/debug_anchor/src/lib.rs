@@ -15,7 +15,11 @@ pub mod debug_anchor {
 
     pub fn set_authority(ctx: Context<SetAuthority>, nonce: u8) -> ProgramResult {
         // Log a string
-        msg!("set authorizer with nonce {} to {}", nonce, ctx.accounts.authority.key.to_string());
+        msg!(
+            "set authorizer with nonce {} to {}",
+            nonce,
+            ctx.accounts.authority.key.to_string()
+        );
 
         Ok(())
     }
@@ -26,20 +30,21 @@ pub struct Initialize {}
 
 #[derive(Accounts)]
 pub struct SetAuthority<'info> {
-    authority: AccountInfo<'info>
+    authority: AccountInfo<'info>,
 }
 
+#[cfg(test)]
 mod tests {
     use solana_program_test::*;
 
     #[tokio::test]
     async fn test_logging() {
         use crate::*;
+        use anchor_lang::InstructionData;
         use solana_program::instruction::Instruction;
         use solana_program_test::*;
         use solana_sdk::signer::Signer;
         use solana_sdk::transaction::Transaction;
-        use anchor_lang::InstructionData;
 
         // Program
         let program_id = id();
@@ -50,7 +55,7 @@ mod tests {
         let mut transaction = Transaction::new_with_payer(
             &[Instruction::new_with_bytes(
                 program_id,
-                &instruction::Initialize{}.data(),
+                &instruction::Initialize {}.data(),
                 vec![AccountMeta::new(Pubkey::new_unique(), false)],
             )],
             Some(&payer.pubkey()),
@@ -66,11 +71,11 @@ mod tests {
     #[tokio::test]
     async fn test_with_accounts() {
         use crate::*;
+        use anchor_lang::{InstructionData, ToAccountMetas};
         use solana_program::instruction::Instruction;
         use solana_program_test::*;
         use solana_sdk::signer::Signer;
         use solana_sdk::transaction::Transaction;
-        use anchor_lang::{InstructionData, ToAccountMetas};
 
         // Program
         let program_id = id();
@@ -79,9 +84,7 @@ mod tests {
         // Start
         let (mut banks_client, payer, recent_blockhash) = program_test.start().await;
 
-        let data = instruction::SetAuthority{
-            nonce: 123,
-        };
+        let data = instruction::SetAuthority { nonce: 123 };
         let accs = accounts::SetAuthority {
             authority: Pubkey::new_unique(),
         };
