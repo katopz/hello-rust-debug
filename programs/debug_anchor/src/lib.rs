@@ -28,6 +28,7 @@ mod tests {
         use solana_program_test::*;
         use solana_sdk::signer::Signer;
         use solana_sdk::transaction::Transaction;
+        use anchor_lang::InstructionData;
 
         // Program
         let program_id = id();
@@ -36,9 +37,9 @@ mod tests {
         // Start
         let (mut banks_client, payer, recent_blockhash) = program_test.start().await;
         let mut transaction = Transaction::new_with_payer(
-            &[Instruction::new_with_bincode(
+            &[Instruction::new_with_bytes(
                 program_id,
-                &(),
+                &instruction::Initialize{}.data(),
                 vec![AccountMeta::new(Pubkey::new_unique(), false)],
             )],
             Some(&payer.pubkey()),
