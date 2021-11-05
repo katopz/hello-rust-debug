@@ -12,12 +12,23 @@ pub mod debug_anchor {
 
         Ok(())
     }
+
+    pub fn set_authority(ctx: Context<SetAuthority>, nonce: u8) -> ProgramResult {
+        // Log a string
+        msg!("set authorizer with nonce {} to {}", nonce, ctx.accounts.authority.key.to_string());
+
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
 pub struct Initialize {}
 
-#[cfg(test)]
+#[derive(Accounts)]
+pub struct SetAuthority<'info> {
+    authority: AccountInfo<'info>
+}
+
 mod tests {
     use solana_program_test::*;
 
@@ -28,6 +39,7 @@ mod tests {
         use solana_program_test::*;
         use solana_sdk::signer::Signer;
         use solana_sdk::transaction::Transaction;
+        use anchor_lang::InstructionData;
 
         // Program
         let program_id = id();
@@ -36,10 +48,49 @@ mod tests {
         // Start
         let (mut banks_client, payer, recent_blockhash) = program_test.start().await;
         let mut transaction = Transaction::new_with_payer(
-            &[Instruction::new_with_bincode(
+            &[Instruction::new_with_bytes(
                 program_id,
-                &(),
+                &instruction::Initialize{}.data(),
                 vec![AccountMeta::new(Pubkey::new_unique(), false)],
+            )],
+            Some(&payer.pubkey()),
+        );
+
+        // Sign
+        transaction.sign(&[&payer], recent_blockhash);
+
+        // Process
+        banks_client.process_transaction(transaction).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_with_accounts() {
+        use crate::*;
+        use solana_program::instruction::Instruction;
+        use solana_program_test::*;
+        use solana_sdk::signer::Signer;
+        use solana_sdk::transaction::Transaction;
+        use anchor_lang::{InstructionData, ToAccountMetas};
+
+        // Program
+        let program_id = id();
+        let program_test = ProgramTest::new("hello_rust_debug", program_id, processor!(entry));
+
+        // Start
+        let (mut banks_client, payer, recent_blockhash) = program_test.start().await;
+
+        let data = instruction::SetAuthority{
+            nonce: 123,
+        };
+        let accs = accounts::SetAuthority {
+            authority: Pubkey::new_unique(),
+        };
+
+        let mut transaction = Transaction::new_with_payer(
+            &[Instruction::new_with_bytes(
+                program_id,
+                &data.data(),
+                accs.to_account_metas(Some(false)),
             )],
             Some(&payer.pubkey()),
         );
