@@ -1,5 +1,6 @@
 # hello-rust-debug
 Debug is a must
 
-## TODO
-- [ ] Make it work T-T.
+# Features
+- [x] Can breakpoint with `anchor framework`.
+- [x] Can breakpoint without `anchor framework`.
